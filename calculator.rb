@@ -1,4 +1,22 @@
-Calculator = Module.new
+class Calculator
+
+  def calculate(calculation)
+    tokens = Tokenizer.new(calculation).tokenize
+    ast = Parser.new.parse(tokens)
+
+    calculate_parsed(ast)
+  end
+
+  def calculate_parsed(ast)
+    left, operator, right = ast
+    reduce(left).public_send(operator, reduce(right))
+  end
+
+  def reduce(operand)
+    operand = calculate_parsed(operand) if operand.is_a?(Array)
+    operand.to_i
+  end
+end
 
 class Calculator::Tokenizer
   VALID_TOKENS = %w{- + / * ( )}
