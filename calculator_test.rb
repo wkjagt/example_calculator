@@ -49,6 +49,12 @@ class TokenizerTest < Minitest::Test
     expected = %w{( 4 + 5 ) / ( ( 6 + 1 ) + 1 )}
     assert_equal expected, tokenizer.tokenize
   end
+
+  def test_tokenize_complex2
+    tokenizer = Calculator::Tokenizer.new("( 4 + 5 ) * ( ( 6 + 1 ) + 1 )")
+    expected = %w{( 4 + 5 ) * ( ( 6 + 1 ) + 1 )}
+    assert_equal expected, tokenizer.tokenize
+  end
 end
 
 class ParserTest < Minitest::Test
@@ -199,6 +205,29 @@ class ParserTest < Minitest::Test
     ]
     assert_equal expected, @parser.parse(tokens)
   end
+
+  def test_parens_complex3
+    # BROKEN
+    tokens = %w{( 4 + 5 ) * ( ( 6 + 1 ) + 1 )}
+    expected = [
+      [
+        "4",
+        "+",
+        "5"
+      ],
+      "*",
+      [
+        [
+          "6",
+          "+",
+          "1"
+        ],
+        "+",
+        "1"
+      ]
+    ]
+    assert_equal expected, @parser.parse(tokens)
+  end
 end
 
 class CalculatorTest < Minitest::Test
@@ -245,5 +274,11 @@ class CalculatorTest < Minitest::Test
     calculation = "( 4 + 5 ) + ( ( 6 + 1 ) + 1 )"
 
     assert_equal 17, @calculator.calculate(calculation)
+  end
+
+  def test_complete2
+    calculation = "( 4 + 5 ) * ( ( 6 + 1 ) + 1 )"
+
+    assert_equal 72, @calculator.calculate(calculation)
   end
 end

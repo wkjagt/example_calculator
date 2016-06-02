@@ -68,7 +68,12 @@ class Calculator::Parser
         return expressions if token == ")"
 
         expressions << if token == operator
-          [expressions.pop, token, tokens.shift]
+          right = tokens.shift
+          if right == "("
+            [expressions.pop, token, parse(tokens)]
+          else
+            [expressions.pop, token, right]
+          end
         else
           token
         end
