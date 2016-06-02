@@ -46,6 +46,9 @@ class Calculator::Parser
     PRECEDENCE.each do |operator|
       expressions = []
       while token = tokens.shift
+        next expressions << parse(tokens) if token == "("
+        return expressions if token == ")"
+
         expressions << if token == operator
           [expressions.pop, token, tokens.shift]
         else
@@ -54,6 +57,7 @@ class Calculator::Parser
       end
       tokens = expressions
     end
+
     tokens.first
   end
 end

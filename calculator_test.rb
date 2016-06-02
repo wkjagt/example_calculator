@@ -63,7 +63,7 @@ class ParserTest < Minitest::Test
     ]
     assert_equal expected, @parser.parse(tokens)
   end
-  
+
   def test_simple2
     tokens = %w{4 + 5 * 6}
     expected = [
@@ -135,6 +135,60 @@ class ParserTest < Minitest::Test
             "6"
           ]
         ]
+      ]
+    ]
+    assert_equal expected, @parser.parse(tokens)
+  end
+
+  def test_parens
+    tokens = %w{( 4 + 5 ) / 6}
+    expected = [
+      [
+        "4",
+        "+",
+        "5"
+      ],
+      "/",
+      "6"
+    ]
+    assert_equal expected, @parser.parse(tokens)
+  end
+
+  def test_parens_complex
+    tokens = %w{( 4 + 5 ) / ( 6 + 1 )}
+    expected = [
+      [
+        "4",
+        "+",
+        "5"
+      ],
+      "/",
+      [
+        "6",
+        "+",
+        "1"
+      ]
+    ]
+    assert_equal expected, @parser.parse(tokens)
+  end
+
+  def test_parens_complex2
+    tokens = %w{( 4 + 5 ) / ( ( 6 + 1 ) + 1 )}
+    expected = [
+      [
+        "4",
+        "+",
+        "5"
+      ],
+      "/",
+      [
+        [
+          "6",
+          "+",
+          "1"
+        ],
+        "+",
+        "1"
       ]
     ]
     assert_equal expected, @parser.parse(tokens)
