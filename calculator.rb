@@ -1,7 +1,11 @@
 class Calculator
+  def initialize
+    @tokenizer = Tokenizer.new
+    @parser = Parser.new
+  end
 
   def calculate(calculation)
-    tokens = Tokenizer.new(calculation).tokenize
+    tokens = @tokenizer.tokenize(calculation)
     ast = Parser.new.parse(tokens)
 
     calculate_parsed(ast)
@@ -21,14 +25,13 @@ end
 class Calculator::Tokenizer
   VALID_TOKENS = %w{- + / * ( )}
 
-  def initialize(calculation)
-    @calculation = "#{calculation} "
+  def initialize
     @current_operand = ""
     @tokens = []
   end
 
-  def tokenize
-    @calculation.each_char do |char|
+  def tokenize(calculation)
+    "#{calculation} ".each_char do |char|
       if is_numeric?(char)
         @current_operand << char
         next

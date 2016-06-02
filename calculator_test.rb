@@ -2,38 +2,42 @@ require "minitest/autorun"
 require "./calculator"
 
 class TokenizerTest < Minitest::Test
+  def setup
+    @tokenizer = Calculator::Tokenizer.new
+  end
+
   def test_tokenize_simple
-    tokenizer = Calculator::Tokenizer.new("4*5")
+    tokens = "4*5"
     expected = [
       "4",
       "*",
       "5"
     ]
-    assert_equal expected, tokenizer.tokenize
+    assert_equal expected, @tokenizer.tokenize(tokens)
   end
 
   def test_tokenize_longer_operands
-    tokenizer = Calculator::Tokenizer.new("400*500")
+    tokens = "400*500"
     expected = [
       "400",
       "*",
       "500"
     ]
-    assert_equal expected, tokenizer.tokenize
+    assert_equal expected, @tokenizer.tokenize(tokens)
   end
 
   def test_tokenize_simple_with_spaces
-    tokenizer = Calculator::Tokenizer.new("4 * 5")
+    tokens = "4 * 5"
     expected = [
       "4",
       "*",
       "5"
     ]
-    assert_equal expected, tokenizer.tokenize
+    assert_equal expected, @tokenizer.tokenize(tokens)
   end
 
   def test_tokenize_simple_with_parens
-    tokenizer = Calculator::Tokenizer.new("(4 * 5)")
+    tokens = "(4 * 5)"
     expected = [
       "(",
       "4",
@@ -41,19 +45,19 @@ class TokenizerTest < Minitest::Test
       "5",
       ")",
     ]
-    assert_equal expected, tokenizer.tokenize
+    assert_equal expected, @tokenizer.tokenize(tokens)
   end
 
   def test_tokenize_complex
-    tokenizer = Calculator::Tokenizer.new("( 4 + 5 ) / ( ( 6 + 1 ) + 1 )")
+    tokens = "( 4 + 5 ) / ( ( 6 + 1 ) + 1 )"
     expected = %w{( 4 + 5 ) / ( ( 6 + 1 ) + 1 )}
-    assert_equal expected, tokenizer.tokenize
+    assert_equal expected, @tokenizer.tokenize(tokens)
   end
 
   def test_tokenize_complex2
-    tokenizer = Calculator::Tokenizer.new("( 4 + 5 ) * ( ( 6 + 1 ) + 1 )")
+    tokens = "( 4 + 5 ) * ( ( 6 + 1 ) + 1 )"
     expected = %w{( 4 + 5 ) * ( ( 6 + 1 ) + 1 )}
-    assert_equal expected, tokenizer.tokenize
+    assert_equal expected, @tokenizer.tokenize(tokens)
   end
 end
 
