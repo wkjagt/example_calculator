@@ -25,31 +25,25 @@ end
 class Calculator::Tokenizer
   VALID_TOKENS = %w{- + / * ( )}
 
-  def initialize
-    @current_operand = ""
-    @tokens = []
-  end
-
   def tokenize(calculation)
+    current_operand = ""
+    tokens = []
+
     "#{calculation} ".each_char do |char|
       if is_numeric?(char)
-        @current_operand << char
+        current_operand << char
         next
+      elsif current_operand != ""
+        tokens << current_operand
+        current_operand = ""
       end
-      append_operand
-      @tokens << char if is_valid_token?(char)
+
+      tokens << char if is_valid_token?(char)
     end
-    @tokens
+    tokens
   end
 
   private
-
-  def append_operand
-    return if @current_operand == ""
-
-    @tokens << @current_operand
-    @current_operand = ""
-  end
 
   def is_numeric?(char)
     char =~ /\d/

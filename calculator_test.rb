@@ -16,6 +16,18 @@ class TokenizerTest < Minitest::Test
     assert_equal expected, @tokenizer.tokenize(tokens)
   end
 
+  def test_tokenizer_resets_itself
+    tokens = "4*5"
+    @tokenizer.tokenize(tokens)
+    
+    expected = [
+      "4",
+      "*",
+      "5"
+    ]
+    assert_equal expected, @tokenizer.tokenize(tokens)
+  end
+
   def test_tokenize_longer_operands
     tokens = "400*500"
     expected = [
