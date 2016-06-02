@@ -7,49 +7,49 @@ class TokenizerTest < Minitest::Test
   end
 
   def test_tokenize_simple
-    tokens = "4*5"
+    calculation = "4*5"
     expected = [
       "4",
       "*",
       "5"
     ]
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 
   def test_tokenizer_resets_itself
-    tokens = "4*5"
-    @tokenizer.tokenize(tokens)
-    
+    calculation = "4*5"
+    @tokenizer.tokenize(calculation)
+
     expected = [
       "4",
       "*",
       "5"
     ]
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 
   def test_tokenize_longer_operands
-    tokens = "400*500"
+    calculation = "400*500"
     expected = [
       "400",
       "*",
       "500"
     ]
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 
   def test_tokenize_simple_with_spaces
-    tokens = "4 * 5"
+    calculation = "4 * 5"
     expected = [
       "4",
       "*",
       "5"
     ]
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 
   def test_tokenize_simple_with_parens
-    tokens = "(4 * 5)"
+    calculation = "(4 * 5)"
     expected = [
       "(",
       "4",
@@ -57,19 +57,25 @@ class TokenizerTest < Minitest::Test
       "5",
       ")",
     ]
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 
   def test_tokenize_complex
-    tokens = "( 4 + 5 ) / ( ( 6 + 1 ) + 1 )"
+    calculation = "( 4 + 5 ) / ( ( 6 + 1 ) + 1 )"
     expected = %w{( 4 + 5 ) / ( ( 6 + 1 ) + 1 )}
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 
   def test_tokenize_complex2
-    tokens = "( 4 + 5 ) * ( ( 6 + 1 ) + 1 )"
+    calculation = "( 4 + 5 ) * ( ( 6 + 1 ) + 1 )"
     expected = %w{( 4 + 5 ) * ( ( 6 + 1 ) + 1 )}
-    assert_equal expected, @tokenizer.tokenize(tokens)
+    assert_equal expected, @tokenizer.tokenize(calculation)
+  end
+
+  def test_tokenize_complex3
+    calculation = "((104+4)*5)+65+6*5+(48+234)"
+    expected = %w{( ( 104 + 4 ) * 5 ) + 65 + 6 * 5 + ( 48 + 234 )}
+    assert_equal expected, @tokenizer.tokenize(calculation)
   end
 end
 
@@ -223,7 +229,6 @@ class ParserTest < Minitest::Test
   end
 
   def test_parens_complex3
-    # BROKEN
     tokens = %w{( 4 + 5 ) * ( ( 6 + 1 ) + 1 )}
     expected = [
       [
@@ -242,6 +247,12 @@ class ParserTest < Minitest::Test
         "1"
       ]
     ]
+    assert_equal expected, @parser.parse(tokens)
+  end
+
+  def test_outermost_parens_dont_add_a_level
+    tokens = %w{( ( ( ( 1 + 3 ) ) ) )}
+    expected = ["1", "+", "3"]
     assert_equal expected, @parser.parse(tokens)
   end
 end
@@ -296,5 +307,8 @@ class CalculatorTest < Minitest::Test
     calculation = "( 4 + 5 ) * ( ( 6 + 1 ) + 1 )"
 
     assert_equal 72, @calculator.calculate(calculation)
+  end
+
+  def test_complete3
   end
 end

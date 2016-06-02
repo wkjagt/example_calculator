@@ -61,7 +61,10 @@ class Calculator::Parser
     PRECEDENCE.each do |operator|
       expressions = []
       while token = tokens.shift
-        next expressions << parse(tokens) if token == "("
+        if token == "("
+          expressions << parse_partial(tokens)
+          next
+        end
         return expressions if token == ")"
 
         expressions << if token == operator
@@ -77,7 +80,12 @@ class Calculator::Parser
       end
       tokens = expressions
     end
-
     tokens.first
+  end
+
+  def parse_partial(tokens)
+    parsed = parse(tokens)
+    parsed = parse(parsed) while parsed.length < 3
+    parsed
   end
 end
