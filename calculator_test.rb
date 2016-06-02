@@ -45,7 +45,11 @@ class TokenizerTest < Minitest::Test
   end
 end
 
-class ReducerTest < Minitest::Test
+class ParserTest < Minitest::Test
+  def setup
+    @parser = Calculator::Parser.new
+  end
+
   def test_simple
     tokens = %w{4 * 5 - 6}
     expected = [
@@ -57,10 +61,9 @@ class ReducerTest < Minitest::Test
       "-",
       "6"
     ]
-
-    assert_equal expected, Calculator::Reducer.new(tokens).reduce
+    assert_equal expected, @parser.parse(tokens)
   end
-
+  
   def test_simple2
     tokens = %w{4 + 5 * 6}
     expected = [
@@ -72,7 +75,7 @@ class ReducerTest < Minitest::Test
         "6"
       ]
     ]
-    assert_equal expected, Calculator::Reducer.new(tokens).reduce
+    assert_equal expected, @parser.parse(tokens)
   end
 
   def test_simple3
@@ -86,7 +89,7 @@ class ReducerTest < Minitest::Test
         "6"
       ]
     ]
-    assert_equal expected, Calculator::Reducer.new(tokens).reduce
+    assert_equal expected, @parser.parse(tokens)
   end
 
   def test_multiple
@@ -100,7 +103,7 @@ class ReducerTest < Minitest::Test
       "/",
       "6"
     ]
-    assert_equal expected, Calculator::Reducer.new(tokens).reduce
+    assert_equal expected, @parser.parse(tokens)
   end
 
   def test_complex
@@ -134,6 +137,6 @@ class ReducerTest < Minitest::Test
         ]
       ]
     ]
-    assert_equal expected, Calculator::Reducer.new(tokens).reduce
+    assert_equal expected, @parser.parse(tokens)
   end
 end

@@ -39,27 +39,21 @@ class Calculator::Tokenizer
   end
 end
 
-class Calculator::Reducer
+class Calculator::Parser
   PRECEDENCE = %w{* / + -}
 
-  def initialize(tokens)
-    @tokens = tokens.dup
-  end
-
-  def reduce
-    PRECEDENCE.each { |operator| reduce_operator(operator) }
-    @tokens.first
-  end
-
-  def reduce_operator(operator)
-    expressions = []
-    while token = @tokens.shift
-      expressions << if token == operator
-        [expressions.pop, token, @tokens.shift]
-      else
-        token
+  def parse(tokens)
+    PRECEDENCE.each do |operator|
+      expressions = []
+      while token = tokens.shift
+        expressions << if token == operator
+          [expressions.pop, token, tokens.shift]
+        else
+          token
+        end
       end
+      tokens = expressions
     end
-    @tokens = expressions
+    tokens.first
   end
 end
