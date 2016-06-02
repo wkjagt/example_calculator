@@ -310,5 +310,8 @@ class CalculatorTest < Minitest::Test
   end
 
   def test_complete3
+    calculation = "((104+4)*5)+65+6*5+(48+234)"
+
+    assert_equal 917, @calculator.calculate(calculation)
   end
 end
